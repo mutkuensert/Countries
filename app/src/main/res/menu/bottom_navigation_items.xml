@@ -7,12 +7,12 @@
         android:enabled="true"
         android:title="Home"
         app:showAsAction="always"
-        android:icon="@drawable/ic_home" />
+        android:icon="@drawable/home_selector" />
     <item
         android:id="@+id/saved"
         android:title="Saved"
         app:showAsAction="always"
         android:enabled="true"
-        android:icon="@drawable/ic_saved"/>
+        android:icon="@drawable/saved_selector"/>
 
 </menu>
