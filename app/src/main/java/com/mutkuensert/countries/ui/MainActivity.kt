@@ -3,6 +3,10 @@ package com.mutkuensert.countries.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.addCallback
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.fragment.NavHostFragment
 import com.mutkuensert.countries.R
 import com.mutkuensert.countries.databinding.ActivityMainBinding
@@ -15,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setNavigation()
         setCustomBackButtonCallback()
+        hideSystemBars()
     }
 
     private fun setNavigation(){
@@ -41,6 +46,14 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this){
             finish()
         }.apply { isEnabled }
+    }
+
+    private fun hideSystemBars() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, binding.root).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
     }
 
 }
