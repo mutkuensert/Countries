@@ -2,6 +2,7 @@ package com.mutkuensert.countries.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.navigation.fragment.NavHostFragment
 import com.mutkuensert.countries.R
 import com.mutkuensert.countries.databinding.ActivityMainBinding
@@ -13,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setNavigation()
+        setCustomBackButtonCallback()
     }
 
     private fun setNavigation(){
@@ -33,6 +35,12 @@ class MainActivity : AppCompatActivity() {
                 else -> { true }
             }
         }
+    }
+
+    private fun setCustomBackButtonCallback(){
+        onBackPressedDispatcher.addCallback(this){
+            finish()
+        }.apply { isEnabled }
     }
 
 }

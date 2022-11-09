@@ -27,7 +27,7 @@
             android:layout_height="56dp"
             android:layout_gravity="bottom"
             android:background="@color/gray"
-            app:labelVisibilityMode="unlabeled"
+            app:labelVisibilityMode="labeled"
             app:itemIconTint="#ffffff"
             app:itemTextColor="#ffffff"
             app:menu="@menu/bottom_navigation_items"/>
