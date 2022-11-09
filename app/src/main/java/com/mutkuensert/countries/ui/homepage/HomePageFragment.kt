@@ -1,20 +1,27 @@
 package com.mutkuensert.countries.ui.homepage
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.mutkuensert.countries.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.mutkuensert.countries.databinding.FragmentHomePageBinding
+import com.mutkuensert.countries.util.Status
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "HomePageFragment"
 @AndroidEntryPoint
 class HomePageFragment : Fragment() {
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
     private val viewModel: HomePageViewModel by viewModels()
+    private val recyclerAdapter = HomePageRecyclerAdapter()
+    private val recyclerViewLayoutManager = LinearLayoutManager(context)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +38,44 @@ class HomePageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.recyclerView.layoutManager = recyclerViewLayoutManager
+        binding.recyclerView.adapter = recyclerAdapter
+        setObserver()
         viewModel.requestCountries()
+        setLoadMoreListener()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setObserver(){
+        viewModel.data.observe(viewLifecycleOwner){
+            when(it.status){
+                Status.ERROR -> {
+                    binding.progressBarLoadingMore.visibility = View.GONE
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+                Status.LOADING -> {
+                    binding.loadMoreButton.visibility = View.GONE
+                    binding.progressBarLoadingMore.visibility = View.VISIBLE
+                }
+                Status.STANDBY -> {}
+                Status.SUCCESS -> {
+                    binding.progressBarLoadingMore.visibility = View.GONE
+                    binding.loadMoreButton.visibility = View.VISIBLE
+                    recyclerAdapter.submitList(it.data)
+                }
+            }
+        }
+    }
+
+    private fun setLoadMoreListener(){
+        binding.loadMoreButton.setOnClickListener {
+            viewModel.getCountriesNextPage()
+            it.visibility = View.GONE
+            binding.progressBarLoadingMore.visibility = View.VISIBLE
+        }
     }
 }
