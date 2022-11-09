@@ -61,7 +61,6 @@ class HomePageFragment : Fragment() {
                     binding.loadMoreButton.visibility = View.GONE
                     binding.progressBarLoadingMore.visibility = View.VISIBLE
                 }
-                Status.STANDBY -> {}
                 Status.SUCCESS -> {
                     binding.progressBarLoadingMore.visibility = View.GONE
                     binding.loadMoreButton.visibility = View.VISIBLE

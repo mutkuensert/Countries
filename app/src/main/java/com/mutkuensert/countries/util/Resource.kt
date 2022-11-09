@@ -15,9 +15,6 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
         fun <T> loading(data: T?): Resource<T> {
             return Resource(Status.LOADING, data, null)
         }
-        fun <T> standby(data: T?): Resource<T> {
-            return Resource(Status.STANDBY, data, null)
-        }
 
     }
 
@@ -26,6 +23,5 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
 enum class Status {
     SUCCESS,
     ERROR,
-    LOADING,
-    STANDBY
+    LOADING
 }
