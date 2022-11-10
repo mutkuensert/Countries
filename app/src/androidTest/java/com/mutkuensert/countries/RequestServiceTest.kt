@@ -1,7 +1,7 @@
 package com.mutkuensert.countries
 
 import android.util.Log
-import com.mutkuensert.countries.data.CountriesModel
+import com.mutkuensert.countries.data.countries.CountriesModel
 import com.mutkuensert.countries.data.source.RequestService
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mutkuensert.countries.data.CountriesDataModel
-import com.mutkuensert.countries.data.CountriesLinksModel
+import com.mutkuensert.countries.data.countries.CountriesDataModel
+import com.mutkuensert.countries.data.countries.CountriesLinksModel
 import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.data.source.RequestService
 import com.mutkuensert.countries.data.source.SavedCountriesDao

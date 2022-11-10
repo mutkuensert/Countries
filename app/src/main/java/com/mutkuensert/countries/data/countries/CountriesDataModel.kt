@@ -1,4 +1,4 @@
-package com.mutkuensert.countries.data
+package com.mutkuensert.countries.data.countries
 
 data class CountriesDataModel(
     val code: String?,

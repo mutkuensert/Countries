@@ -1,5 +1,6 @@
 package com.mutkuensert.countries.ui.saved
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,6 +10,7 @@ import com.mutkuensert.countries.R
 import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.SingleItemBinding
 import com.mutkuensert.countries.ui.ItemClickListener
+import com.mutkuensert.countries.ui.detail.DetailActivity
 
 class SavedRecyclerAdapter(private val clickListener: ItemClickListener): ListAdapter<SavedCountryModel, SavedRecyclerAdapter.ViewHolder>(SavedCountryModelDiffCallback) {
     class ViewHolder(val binding: SingleItemBinding): RecyclerView.ViewHolder(binding.root){}
@@ -32,6 +34,12 @@ class SavedRecyclerAdapter(private val clickListener: ItemClickListener): ListAd
                 val newSavedCountry = SavedCountryModel(getItem(position).countryId, getItem(position).countryName)
                 clickListener.onItemClickSave(newSavedCountry)
             }
+        }
+
+        holder.binding.countryCard.setOnClickListener {
+            val intent = Intent(it.context, DetailActivity::class.java)
+            intent.putExtra("countryCode", getItem(position).countryId)
+            it.context.startActivity(intent)
         }
     }
 

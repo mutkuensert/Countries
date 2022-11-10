@@ -1,15 +1,17 @@
 package com.mutkuensert.countries.ui.homepage
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mutkuensert.countries.R
-import com.mutkuensert.countries.data.CountriesDataModel
+import com.mutkuensert.countries.data.countries.CountriesDataModel
 import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.SingleItemBinding
 import com.mutkuensert.countries.ui.ItemClickListener
+import com.mutkuensert.countries.ui.detail.DetailActivity
 
 class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): ListAdapter<CountriesDataModel, HomePageRecyclerAdapter.ViewHolder>(CountriesDataModelDiffCallback) {
     private val savedCountriesList = mutableListOf<SavedCountryModel>()
@@ -24,6 +26,7 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.countryName.text = getItem(position).name
         val country = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
+
         if(savedCountriesList.contains(country)){
             holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
         }
@@ -38,6 +41,12 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
                 val newSavedCountry = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
                 clickListener.onItemClickSave(newSavedCountry)
             }
+        }
+
+        holder.binding.countryCard.setOnClickListener {
+            val intent = Intent(it.context, DetailActivity::class.java)
+            intent.putExtra("countryCode", getItem(position).code)
+            it.context.startActivity(intent)
         }
 
     }
