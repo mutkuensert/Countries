@@ -20,10 +20,7 @@ class SavedRecyclerAdapter(private val clickListener: ItemClickListener): ListAd
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.countryName.text = getItem(position).countryName
-
-        if(currentList.contains(getItem(position))){
-            holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
-        }
+        holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
 
         holder.binding.saveButton.setOnClickListener {
             if(currentList.contains(getItem(position))){

@@ -89,6 +89,7 @@ class HomePageFragment : Fragment() {
 
         viewModel.savedCountries.observe(viewLifecycleOwner){
             recyclerAdapter.setSavedCountriesList(it)
+            recyclerAdapter.notifyDataSetChanged()
         }
     }
 

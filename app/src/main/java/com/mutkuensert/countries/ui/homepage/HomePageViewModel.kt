@@ -90,12 +90,14 @@ class HomePageViewModel @Inject constructor(
     fun saveData(savedCountryModel: SavedCountryModel){
         viewModelScope.launch(Dispatchers.IO) {
             databaseDao.insertAll(savedCountryModel)
+            getAllSavedDataAndRefresh()
         }
     }
 
     fun deleteSavedData(savedCountryModel: SavedCountryModel){
         viewModelScope.launch(Dispatchers.IO) {
             databaseDao.delete(savedCountryModel)
+            getAllSavedDataAndRefresh()
         }
     }
 }
