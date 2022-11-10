@@ -82,7 +82,17 @@ class DetailActivity : AppCompatActivity() {
                                 add(SvgDecoder.Factory())
                             }
                             .build()
-                        binding.imageView.load(response.flagImageUri, imageLoader)
+
+                        binding.imageView.load(response.flagImageUri, imageLoader){
+                            listener(
+                                onSuccess = {_, _ ->
+                                    binding.progressBar.visibility = View.GONE
+                                },
+                                onError = { _, _ ->
+                                    binding.progressBar.visibility = View.GONE
+                                }
+                            )
+                        }
                     }
                 }
             }
