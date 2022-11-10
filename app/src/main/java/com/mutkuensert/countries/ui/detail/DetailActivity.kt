@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.load
+import com.mutkuensert.countries.R
 import com.mutkuensert.countries.databinding.ActivityDetailBinding
 import com.mutkuensert.countries.util.Status
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +31,7 @@ class DetailActivity : AppCompatActivity() {
         hideSystemBars()
 
         getIntentExtraOrFinish()
-        setObserver()
+        setObservers()
         setClickListener()
     }
 
@@ -53,7 +54,8 @@ class DetailActivity : AppCompatActivity() {
         binding.actionBar.setNavigationOnClickListener { finish() }
     }
 
-    private fun setObserver(){
+    private fun setObservers(){
+
         viewModel.data.observe(this){ resource->
             when(resource.status){
                 Status.STANDBY -> {}
@@ -68,6 +70,8 @@ class DetailActivity : AppCompatActivity() {
                             capitalTextView.text = response.capital
                             countryCodeTextView.text = response.code
                             actionBar.title = response.name
+
+                            response.name?.let { viewModel.doesCountryExistInUsersDatabase(it) }
 
                             forMoreInformationButton.setOnClickListener {
                                 response.wikiDataId?.let { id->
@@ -95,6 +99,15 @@ class DetailActivity : AppCompatActivity() {
                         }
                     }
                 }
+            }
+        }
+
+
+        viewModel.countryExists.observe(this){
+            if(it){
+                binding.actionBar.menu.getItem(0).setIcon(R.drawable.ic_saved_star)
+            }else{
+                binding.actionBar.menu.getItem(0).setIcon(R.drawable.ic_unsaved_star)
             }
         }
     }

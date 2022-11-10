@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mutkuensert.countries.data.countrydetails.CountryData
 import com.mutkuensert.countries.data.source.RequestService
+import com.mutkuensert.countries.data.source.SavedCountriesDao
 import com.mutkuensert.countries.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +15,14 @@ import javax.inject.Inject
 
 private const val TAG = "DetailViewModel"
 @HiltViewModel
-class DetailViewModel @Inject constructor(private val requestService: RequestService): ViewModel() {
+class DetailViewModel @Inject constructor(
+    private val requestService: RequestService,
+    private val databaseDao: SavedCountriesDao): ViewModel() {
     private val _data = MutableLiveData<Resource<CountryData>>(Resource.standby(null))
     val data get() = _data
+
+    private var _countryExists = MutableLiveData<Boolean>(false)
+    val countryExists get() = _countryExists
 
     fun requestCountryDetail(countryCode: String){
         viewModelScope.launch(Dispatchers.IO) {
@@ -32,6 +38,12 @@ class DetailViewModel @Inject constructor(private val requestService: RequestSer
                     }
                 }
             }
+        }
+    }
+
+    fun doesCountryExistInUsersDatabase(countryName: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            _countryExists.postValue(databaseDao.doesCountryExist(countryName))
         }
     }
 }
