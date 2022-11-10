@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.FragmentHomePageBinding
@@ -19,7 +19,7 @@ private const val TAG = "HomePageFragment"
 class HomePageFragment : Fragment() {
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HomePageViewModel by activityViewModels()
+    private val viewModel: HomePageViewModel by viewModels()
     private lateinit var recyclerAdapter: HomePageRecyclerAdapter
     private val recyclerViewLayoutManager = LinearLayoutManager(context)
 
@@ -89,7 +89,6 @@ class HomePageFragment : Fragment() {
 
         viewModel.savedCountries.observe(viewLifecycleOwner){
             recyclerAdapter.setSavedCountriesList(it)
-            recyclerAdapter.notifyDataSetChanged()
         }
     }
 
