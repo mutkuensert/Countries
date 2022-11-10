@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mutkuensert.countries.data.countrydetails.CountryData
 import com.mutkuensert.countries.data.source.RequestService
-import com.mutkuensert.countries.util.BASE_URL
 import com.mutkuensert.countries.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +24,7 @@ class DetailViewModel @Inject constructor(private val requestService: RequestSer
             requestService.getCountryDetail(countryCode).also { response ->
                 if(response.isSuccessful){
                     val body = response.body()
-                    if(body != null && body.data != null){
+                    if(body?.data != null){
                         _data.postValue(Resource.success(body.data))
                         Log.i(TAG, "requestCountryDetail(): ${body.data}")
                     }else{

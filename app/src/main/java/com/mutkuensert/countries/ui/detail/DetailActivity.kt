@@ -10,6 +10,9 @@ import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.load
 import com.mutkuensert.countries.databinding.ActivityDetailBinding
 import com.mutkuensert.countries.util.Status
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,6 +76,13 @@ class DetailActivity : AppCompatActivity() {
                                 }
                             }
                         }
+
+                        val imageLoader = ImageLoader.Builder(this)
+                            .components {
+                                add(SvgDecoder.Factory())
+                            }
+                            .build()
+                        binding.imageView.load(response.flagImageUri, imageLoader)
                     }
                 }
             }
