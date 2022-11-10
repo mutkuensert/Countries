@@ -3,5 +3,6 @@ package com.mutkuensert.countries.ui
 import com.mutkuensert.countries.data.SavedCountryModel
 
 interface ItemClickListener {
-    fun onItemClick(country: SavedCountryModel)
+    fun onItemClickSave(savedCountryModel: SavedCountryModel)
+    fun onItemClickDelete(savedCountryModel: SavedCountryModel)
 }

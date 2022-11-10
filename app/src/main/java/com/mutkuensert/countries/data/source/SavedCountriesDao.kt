@@ -16,5 +16,8 @@ interface SavedCountriesDao{
     suspend fun delete(savedCountryModel: SavedCountryModel)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(savedCountry: SavedCountryModel)
+    suspend fun insertAll(savedCountryModel: SavedCountryModel)
+
+    @Query("SELECT EXISTS(SELECT * FROM SavedCountries WHERE country_name = :countryName)")
+    suspend fun doesCountryExist(countryName: String): Boolean
 }

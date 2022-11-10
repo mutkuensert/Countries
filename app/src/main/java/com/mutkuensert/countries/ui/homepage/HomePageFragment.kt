@@ -1,16 +1,13 @@
 package com.mutkuensert.countries.ui.homepage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.FragmentHomePageBinding
 import com.mutkuensert.countries.ui.ItemClickListener
@@ -42,14 +39,19 @@ class HomePageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerAdapter = HomePageRecyclerAdapter(object : ItemClickListener{
-            override fun onItemClick(country: SavedCountryModel) {
-                viewModel.saveData(country)
+            override fun onItemClickSave(savedCountryModel: SavedCountryModel) {
+                viewModel.saveData(savedCountryModel)
+            }
+
+            override fun onItemClickDelete(savedCountryModel: SavedCountryModel) {
+                viewModel.deleteSavedData(savedCountryModel)
             }
 
         })
         binding.recyclerView.layoutManager = recyclerViewLayoutManager
         binding.recyclerView.adapter = recyclerAdapter
-        setObserver()
+        setObservers()
+        viewModel.getAllSavedDataAndRefresh()
         if(viewModel.data.value!!.status != Status.SUCCESS) viewModel.requestCountries() //We must keep previous data during navigation between fragments.
         setLoadMoreListener()
     }
@@ -59,7 +61,7 @@ class HomePageFragment : Fragment() {
         _binding = null
     }
 
-    private fun setObserver(){
+    private fun setObservers(){
         viewModel.data.observe(viewLifecycleOwner){
             when(it.status){
                 Status.STANDBY -> {}
@@ -77,6 +79,10 @@ class HomePageFragment : Fragment() {
                     recyclerAdapter.submitList(it.data)
                 }
             }
+        }
+
+        viewModel.savedCountries.observe(viewLifecycleOwner){
+            recyclerAdapter.setSavedCountriesList(it)
         }
     }
 
