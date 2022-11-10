@@ -31,15 +31,14 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
         holder.binding.saveButton.setOnClickListener {
             if(savedCountriesList.contains(country)){
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_unsaved_star)
-                val newSavedCountry = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
-                clickListener.onItemClickDelete(newSavedCountry)
+                val countryWillBeDeleted = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
+                clickListener.onItemClickDelete(countryWillBeDeleted)
             }else{
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
                 val newSavedCountry = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
                 clickListener.onItemClickSave(newSavedCountry)
             }
         }
-
 
     }
 

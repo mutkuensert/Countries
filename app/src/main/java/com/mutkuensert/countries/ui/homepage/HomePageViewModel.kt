@@ -15,9 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "SharedViewModel"
+private const val TAG = "HomePageViewModel"
 @HiltViewModel
-class SharedViewModel @Inject constructor(
+class HomePageViewModel @Inject constructor(
     private val requestService: RequestService,
     private val databaseDao: SavedCountriesDao): ViewModel() {
 

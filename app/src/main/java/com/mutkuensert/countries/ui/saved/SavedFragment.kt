@@ -6,17 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mutkuensert.countries.R
+import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.FragmentSavedBinding
-import com.mutkuensert.countries.ui.homepage.SharedViewModel
+import com.mutkuensert.countries.ui.ItemClickListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SavedFragment : Fragment() {
     private var _binding: FragmentSavedBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: SharedViewModel by activityViewModels()
-    private val recyclerAdapter = SavedRecyclerAdapter()
+    private val viewModel: SavedViewModel by activityViewModels()
+    private lateinit var recyclerAdapter: SavedRecyclerAdapter
     private val recyclerViewLayoutManager = LinearLayoutManager(context)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +35,7 @@ class SavedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerView.layoutManager = recyclerViewLayoutManager
-        binding.recyclerView.adapter = recyclerAdapter
+        setRecyclerAdapter()
         setObserver()
         viewModel.getAllSavedDataAndRefresh()
     }
@@ -49,5 +49,21 @@ class SavedFragment : Fragment() {
         viewModel.savedCountries.observe(viewLifecycleOwner){
             recyclerAdapter.submitList(it)
         }
+    }
+
+    private fun setRecyclerAdapter(){
+        recyclerAdapter = SavedRecyclerAdapter(object : ItemClickListener {
+            override fun onItemClickSave(savedCountryModel: SavedCountryModel) {
+                viewModel.saveData(savedCountryModel)
+            }
+
+            override fun onItemClickDelete(savedCountryModel: SavedCountryModel) {
+                viewModel.deleteSavedData(savedCountryModel)
+            }
+
+        })
+
+        binding.recyclerView.layoutManager = recyclerViewLayoutManager
+        binding.recyclerView.adapter = recyclerAdapter
     }
 }

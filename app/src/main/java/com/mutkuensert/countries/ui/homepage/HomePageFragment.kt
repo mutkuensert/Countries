@@ -19,7 +19,7 @@ private const val TAG = "HomePageFragment"
 class HomePageFragment : Fragment() {
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: SharedViewModel by activityViewModels()
+    private val viewModel: HomePageViewModel by activityViewModels()
     private lateinit var recyclerAdapter: HomePageRecyclerAdapter
     private val recyclerViewLayoutManager = LinearLayoutManager(context)
 
@@ -38,18 +38,7 @@ class HomePageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerAdapter = HomePageRecyclerAdapter(object : ItemClickListener{
-            override fun onItemClickSave(savedCountryModel: SavedCountryModel) {
-                viewModel.saveData(savedCountryModel)
-            }
-
-            override fun onItemClickDelete(savedCountryModel: SavedCountryModel) {
-                viewModel.deleteSavedData(savedCountryModel)
-            }
-
-        })
-        binding.recyclerView.layoutManager = recyclerViewLayoutManager
-        binding.recyclerView.adapter = recyclerAdapter
+        setRecyclerAdapter()
         setObservers()
         viewModel.getAllSavedDataAndRefresh()
         if(viewModel.data.value!!.status != Status.SUCCESS) viewModel.requestCountries() //We must keep previous data during navigation between fragments.
@@ -59,6 +48,23 @@ class HomePageFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setRecyclerAdapter(){
+        recyclerAdapter = HomePageRecyclerAdapter(object : ItemClickListener{
+            override fun onItemClickSave(savedCountryModel: SavedCountryModel) {
+                viewModel.saveData(savedCountryModel)
+            }
+
+            override fun onItemClickDelete(savedCountryModel: SavedCountryModel) {
+                viewModel.deleteSavedData(savedCountryModel)
+
+            }
+
+        })
+
+        binding.recyclerView.layoutManager = recyclerViewLayoutManager
+        binding.recyclerView.adapter = recyclerAdapter
     }
 
     private fun setObservers(){
