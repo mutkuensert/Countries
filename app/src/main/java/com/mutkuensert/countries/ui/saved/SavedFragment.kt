@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.FragmentSavedBinding
 import com.mutkuensert.countries.ui.ItemClickListener
+import com.mutkuensert.countries.ui.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SavedFragment : Fragment() {
     private var _binding: FragmentSavedBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: SavedViewModel by activityViewModels()
+    private val viewModel: SharedViewModel by activityViewModels()
     private lateinit var recyclerAdapter: SavedRecyclerAdapter
     private val recyclerViewLayoutManager = LinearLayoutManager(context)
 

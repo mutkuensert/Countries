@@ -1,4 +1,4 @@
-package com.mutkuensert.countries.ui.homepage
+package com.mutkuensert.countries.ui
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -16,9 +16,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "HomePageViewModel"
+private const val TAG = "SharedViewModel"
 @HiltViewModel
-class HomePageViewModel @Inject constructor(
+class SharedViewModel @Inject constructor(
     private val requestService: RequestService,
     private val databaseDao: SavedCountriesDao): ViewModel() {
 

@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.FragmentHomePageBinding
 import com.mutkuensert.countries.ui.ItemClickListener
+import com.mutkuensert.countries.ui.SharedViewModel
 import com.mutkuensert.countries.util.Status
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +20,7 @@ private const val TAG = "HomePageFragment"
 class HomePageFragment : Fragment() {
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HomePageViewModel by viewModels()
+    private val viewModel: SharedViewModel by activityViewModels()
     private lateinit var recyclerAdapter: HomePageRecyclerAdapter
     private val recyclerViewLayoutManager = LinearLayoutManager(context)
 
