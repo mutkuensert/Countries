@@ -28,10 +28,11 @@
                 android:text="Text"/>
 
             <ImageView
+                android:id="@+id/saveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/ic_outlined_star"
+                android:src="@drawable/ic_unsaved_star"
                 android:focusable="true"
                 android:contentDescription="Save button" />
         </LinearLayout>

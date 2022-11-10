@@ -6,21 +6,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mutkuensert.countries.data.CountriesDataModel
 import com.mutkuensert.countries.data.CountriesLinksModel
+import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.data.source.RequestService
-import com.mutkuensert.countries.util.BASE_URL
+import com.mutkuensert.countries.data.source.SavedCountriesDao
 import com.mutkuensert.countries.util.Resource
-import com.mutkuensert.countries.util.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "HomePageViewModel"
+private const val TAG = "SharedViewModel"
 @HiltViewModel
-class HomePageViewModel @Inject constructor(private val requestService: RequestService): ViewModel() {
+class SharedViewModel @Inject constructor(
+    private val requestService: RequestService,
+    private val databaseDao: SavedCountriesDao): ViewModel() {
+
     private val _data = MutableLiveData<Resource<List<CountriesDataModel>>>(Resource.standby(null))
     val data get() = _data
     private var nextPageUrl: String? = null
+
+    private val _savedCountries = MutableLiveData<List<SavedCountryModel>>()
+    val savedCountries get() = _savedCountries
 
     fun requestCountries(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -73,5 +79,23 @@ class HomePageViewModel @Inject constructor(private val requestService: RequestS
             }
         }
         if (!nextPageExists) nextPageUrl = null
+    }
+
+    fun getAllSavedDataAndRefresh(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _savedCountries.postValue(databaseDao.getAll())
+        }
+    }
+
+    fun saveData(savedCountryModel: SavedCountryModel){
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseDao.insertAll(savedCountryModel)
+        }
+    }
+
+    fun deleteSavedData(savedCountryModel: SavedCountryModel){
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseDao.delete(savedCountryModel)
+        }
     }
 }
