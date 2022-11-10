@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.data.countrydetails.CountryData
 import com.mutkuensert.countries.data.source.RequestService
 import com.mutkuensert.countries.data.source.SavedCountriesDao
@@ -44,6 +45,20 @@ class DetailViewModel @Inject constructor(
     fun doesCountryExistInUsersDatabase(countryName: String){
         viewModelScope.launch(Dispatchers.IO) {
             _countryExists.postValue(databaseDao.doesCountryExist(countryName))
+        }
+    }
+
+    fun saveData(savedCountryModel: SavedCountryModel){
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseDao.insertAll(savedCountryModel)
+            _countryExists.postValue(true)
+        }
+    }
+
+    fun deleteSavedData(savedCountryModel: SavedCountryModel){
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseDao.delete(savedCountryModel)
+            _countryExists.postValue(false)
         }
     }
 }

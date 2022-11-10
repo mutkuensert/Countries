@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -14,6 +15,7 @@ import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.load
 import com.mutkuensert.countries.R
+import com.mutkuensert.countries.data.SavedCountryModel
 import com.mutkuensert.countries.databinding.ActivityDetailBinding
 import com.mutkuensert.countries.util.Status
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +26,8 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var countryCode: String
     private val viewModel: DetailViewModel by viewModels()
 
+    private lateinit var country: SavedCountryModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -32,7 +36,7 @@ class DetailActivity : AppCompatActivity() {
 
         getIntentExtraOrFinish()
         setObservers()
-        setClickListener()
+        setClickListeners()
     }
 
     private fun hideSystemBars() {
@@ -50,8 +54,22 @@ class DetailActivity : AppCompatActivity() {
         }else{ finish() }
     }
 
-    private fun setClickListener(){
+    private fun setClickListeners(){
         binding.actionBar.setNavigationOnClickListener { finish() }
+
+        binding.actionBar.menu.getItem(0).setOnMenuItemClickListener(object: MenuItem.OnMenuItemClickListener{
+            override fun onMenuItemClick(item: MenuItem): Boolean {
+                if(item.itemId == binding.actionBar.menu.getItem(0).itemId){
+                    if(viewModel.countryExists.value!!){
+                        viewModel.deleteSavedData(country)
+                    }else{
+                        viewModel.saveData(country)
+                    }
+                }
+                return true
+            }
+
+        })
     }
 
     private fun setObservers(){
@@ -70,6 +88,7 @@ class DetailActivity : AppCompatActivity() {
                             capitalTextView.text = response.capital
                             countryCodeTextView.text = response.code
                             actionBar.title = response.name
+                            country = SavedCountryModel(response.code!!, response.name!!)
 
                             response.name?.let { viewModel.doesCountryExistInUsersDatabase(it) }
 
