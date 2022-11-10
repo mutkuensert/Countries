@@ -1,6 +1,7 @@
 package com.mutkuensert.countries.ui.homepage
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,11 +23,11 @@ class HomePageViewModel @Inject constructor(
     private val databaseDao: SavedCountriesDao): ViewModel() {
 
     private val _data = MutableLiveData<Resource<List<CountriesDataModel>>>(Resource.standby(null))
-    val data get() = _data
+    val data: LiveData<Resource<List<CountriesDataModel>>> get() = _data
     private var nextPageUrl: String? = null
 
     private val _savedCountries = MutableLiveData<List<SavedCountryModel>>()
-    val savedCountries get() = _savedCountries
+    val savedCountries: LiveData<List<SavedCountryModel>> get() = _savedCountries
 
     fun requestCountries(){
         viewModelScope.launch(Dispatchers.IO) {

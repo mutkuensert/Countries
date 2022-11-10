@@ -1,5 +1,6 @@
 package com.mutkuensert.countries.ui.saved
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +15,7 @@ import javax.inject.Inject
 class SavedViewModel @Inject constructor(private val databaseDao: SavedCountriesDao) : ViewModel() {
 
     private val _savedCountries = MutableLiveData<List<SavedCountryModel>>()
-    val savedCountries get() = _savedCountries
+    val savedCountries: LiveData<List<SavedCountryModel>> get() = _savedCountries
 
     fun getAllSavedDataAndRefresh(){
         viewModelScope.launch(Dispatchers.IO) {

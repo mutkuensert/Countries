@@ -1,6 +1,7 @@
 package com.mutkuensert.countries.ui.detail
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,7 +21,7 @@ class DetailViewModel @Inject constructor(
     private val requestService: RequestService,
     private val databaseDao: SavedCountriesDao): ViewModel() {
     private val _data = MutableLiveData<Resource<CountryData>>(Resource.standby(null))
-    val data get() = _data
+    val data: LiveData<Resource<CountryData>> get() = _data
 
     private var _countryExists = MutableLiveData<Boolean>(false)
     val countryExists get() = _countryExists
