@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mutkuensert.countries.data.countries.CountriesDataModel
 import com.mutkuensert.countries.data.countries.CountriesLinksModel
 import com.mutkuensert.countries.data.SavedCountryModel
+import com.mutkuensert.countries.data.countries.CountriesDataAndExistenceInDatabaseModel
 import com.mutkuensert.countries.data.source.RequestService
 import com.mutkuensert.countries.data.source.SavedCountriesDao
 import com.mutkuensert.countries.util.Resource
@@ -22,11 +23,11 @@ class SharedViewModel @Inject constructor(
     private val requestService: RequestService,
     private val databaseDao: SavedCountriesDao): ViewModel() {
 
-    private val _data = MutableLiveData<Resource<List<CountriesDataModel>>>(Resource.standby(null))
-    val data: LiveData<Resource<List<CountriesDataModel>>> get() = _data
+    private val _data = MutableLiveData<Resource<List<CountriesDataAndExistenceInDatabaseModel>>>(Resource.standby(null))
+    val data: LiveData<Resource<List<CountriesDataAndExistenceInDatabaseModel>>> get() = _data
     private var nextPageUrl: String? = null
 
-    private val _savedCountries = MutableLiveData<List<SavedCountryModel>>()
+    private val _savedCountries = MutableLiveData<List<SavedCountryModel>>(mutableListOf())
     val savedCountries: LiveData<List<SavedCountryModel>> get() = _savedCountries
 
     fun requestCountries(){
@@ -35,7 +36,8 @@ class SharedViewModel @Inject constructor(
             requestService.getCountries().also { response->
                 val body = response.body()
                 if(response.isSuccessful && body != null){
-                    _data.postValue(Resource.success(body.data))
+                    val dataWillBePosted = checkExistenceInDatabaseAndMatchReceivedDataWithSavedData(body.data)
+                    _data.postValue(Resource.success(dataWillBePosted))
                     Log.i(TAG, "requestCountries(): ${body}")
                     setNextPageUrlIfExistsOrSetItNull(body.links)
 
@@ -56,8 +58,9 @@ class SharedViewModel @Inject constructor(
                     if(response.isSuccessful && body != null){
 
                         Log.i(TAG, "getCountriesNextPage(): ${body}")
-                        val newData = _data.value!!.data!! + body.data
-                        _data.postValue(Resource.success(newData))
+                        val newDataMatchedWithSavedDatas = checkExistenceInDatabaseAndMatchReceivedDataWithSavedData(body.data)
+                        val dataWillBePosted = _data.value!!.data!!.plus(newDataMatchedWithSavedDatas)
+                        _data.postValue(Resource.success(dataWillBePosted))
                         setNextPageUrlIfExistsOrSetItNull(body.links)
 
                     }else{
@@ -91,14 +94,60 @@ class SharedViewModel @Inject constructor(
     fun saveData(savedCountryModel: SavedCountryModel){
         viewModelScope.launch(Dispatchers.IO) {
             databaseDao.insertAll(savedCountryModel)
+            val data = _data.value!!.data!!
+            for(i in data){
+                if(i.data.name == savedCountryModel.countryName) {
+                    i.existence = true
+                    break
+                }
+            }
             getAllSavedDataAndRefresh()
+            _data.postValue(Resource.success(data))
         }
     }
 
     fun deleteSavedData(savedCountryModel: SavedCountryModel){
         viewModelScope.launch(Dispatchers.IO) {
             databaseDao.delete(savedCountryModel)
+            val data = _data.value!!.data!!
+            for(i in data){
+                if(i.data.name == savedCountryModel.countryName) {
+                    i.existence = false
+                    break
+                }
+            }
             getAllSavedDataAndRefresh()
+            _data.postValue(Resource.success(data))
         }
+    }
+
+    suspend fun checkExistenceInDatabaseAndMatchReceivedDataWithSavedData(receivedCountriesList: List<CountriesDataModel>): List<CountriesDataAndExistenceInDatabaseModel>{
+        val newList = mutableListOf<CountriesDataAndExistenceInDatabaseModel>()
+        for(i in receivedCountriesList){
+            if(databaseDao.doesCountryExist(i.name!!)){
+                newList.add(CountriesDataAndExistenceInDatabaseModel(i,true))
+            }else{
+                newList.add(CountriesDataAndExistenceInDatabaseModel(i,false))
+            }
+        }
+        return newList
+    }
+
+    fun checkExistencesInDatabase(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _data.value?.data?.let {
+                val newList = mutableListOf<CountriesDataAndExistenceInDatabaseModel>()
+                for(i in it){
+                    if(databaseDao.doesCountryExist(i.data.name!!)){
+                        newList.add(CountriesDataAndExistenceInDatabaseModel(i.data,true))
+                    }else{
+                        newList.add(CountriesDataAndExistenceInDatabaseModel(i.data,false))
+                    }
+                }
+                _data.postValue(Resource.success(newList))
+            }
+        }
+
+
     }
 }

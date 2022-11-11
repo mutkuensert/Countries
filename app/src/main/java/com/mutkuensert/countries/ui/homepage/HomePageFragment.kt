@@ -1,6 +1,7 @@
 package com.mutkuensert.countries.ui.homepage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,11 @@ class HomePageFragment : Fragment() {
         setLoadMoreListener()
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.checkExistencesInDatabase()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -53,13 +59,17 @@ class HomePageFragment : Fragment() {
 
     private fun setRecyclerAdapter(){
         recyclerAdapter = HomePageRecyclerAdapter(object : ItemClickListener{
-            override fun onItemClickSave(savedCountryModel: SavedCountryModel) {
+            override fun onItemClickSave(savedCountryModel: SavedCountryModel, position: Int) {
                 viewModel.saveData(savedCountryModel)
             }
 
-            override fun onItemClickDelete(savedCountryModel: SavedCountryModel) {
+            override fun onItemClickDelete(savedCountryModel: SavedCountryModel, position: Int) {
                 viewModel.deleteSavedData(savedCountryModel)
 
+            }
+
+            override fun onItemNameClick(position: Int) {
+                //
             }
 
         })
@@ -86,10 +96,6 @@ class HomePageFragment : Fragment() {
                     recyclerAdapter.submitList(it.data)
                 }
             }
-        }
-
-        viewModel.savedCountries.observe(viewLifecycleOwner){
-            recyclerAdapter.setSavedCountriesList(it)
         }
     }
 

@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mutkuensert.countries.R
 import com.mutkuensert.countries.data.countries.CountriesDataModel
 import com.mutkuensert.countries.data.SavedCountryModel
+import com.mutkuensert.countries.data.countries.CountriesDataAndExistenceInDatabaseModel
 import com.mutkuensert.countries.databinding.SingleItemBinding
 import com.mutkuensert.countries.ui.ItemClickListener
 import com.mutkuensert.countries.ui.detail.DetailActivity
 
-class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): ListAdapter<CountriesDataModel, HomePageRecyclerAdapter.ViewHolder>(CountriesDataModelDiffCallback) {
-    private val savedCountriesList = mutableListOf<SavedCountryModel>()
+class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): ListAdapter<CountriesDataAndExistenceInDatabaseModel, HomePageRecyclerAdapter.ViewHolder>(CountriesDataAndExistenceInDatabaseModelDiffCallback) {
 
     class ViewHolder(val binding: SingleItemBinding): RecyclerView.ViewHolder(binding.root){}
 
@@ -24,51 +24,46 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.countryName.text = getItem(position).name
-        val country = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
+        holder.binding.countryName.text = getItem(position).data.name
 
-        if(savedCountriesList.contains(country)){
+        if(getItem(position).existence){
             holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
         }
 
         holder.binding.saveButton.setOnClickListener {
-            if(savedCountriesList.contains(country)){
+            if(getItem(position).existence){
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_unsaved_star)
-                val countryWillBeDeleted = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
-                clickListener.onItemClickDelete(countryWillBeDeleted)
+                val countryWillBeDeleted = SavedCountryModel(getItem(position).data.code!!, getItem(position).data.name!!)
+                clickListener.onItemClickDelete(countryWillBeDeleted, position)
             }else{
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
-                val newSavedCountry = SavedCountryModel(getItem(position).code!!, getItem(position).name!!)
-                clickListener.onItemClickSave(newSavedCountry)
+                val newSavedCountry = SavedCountryModel(getItem(position).data.code!!, getItem(position).data.name!!)
+                clickListener.onItemClickSave(newSavedCountry, position)
             }
         }
 
         holder.binding.countryCard.setOnClickListener {
+            clickListener.onItemNameClick(position)
             val intent = Intent(it.context, DetailActivity::class.java)
-            intent.putExtra("countryCode", getItem(position).code)
+            intent.putExtra("countryCode", getItem(position).data.code)
             it.context.startActivity(intent)
         }
 
     }
 
-    fun setSavedCountriesList(list: List<SavedCountryModel>){
-        savedCountriesList.clear()
-        savedCountriesList.addAll(list)
-    }
-
-    object CountriesDataModelDiffCallback: DiffUtil.ItemCallback<CountriesDataModel>(){
+    object CountriesDataAndExistenceInDatabaseModelDiffCallback: DiffUtil.ItemCallback<CountriesDataAndExistenceInDatabaseModel>(){
         override fun areItemsTheSame(
-            oldItem: CountriesDataModel,
-            newItem: CountriesDataModel
+            oldItem: CountriesDataAndExistenceInDatabaseModel,
+            newItem: CountriesDataAndExistenceInDatabaseModel
         ): Boolean {
-            return oldItem.name == newItem.name
+            return oldItem.data.name == newItem.data.name
         }
 
         override fun areContentsTheSame(
-            oldItem: CountriesDataModel,
-            newItem: CountriesDataModel
+            oldItem: CountriesDataAndExistenceInDatabaseModel,
+            newItem: CountriesDataAndExistenceInDatabaseModel
         ): Boolean {
-            return oldItem.name == newItem.name
+            return oldItem.existence == newItem.existence
         }
 
     }

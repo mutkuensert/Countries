@@ -28,11 +28,11 @@ class SavedRecyclerAdapter(private val clickListener: ItemClickListener): ListAd
             if(currentList.contains(getItem(position))){
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_unsaved_star)
                 val countryWillBeDeleted= SavedCountryModel(getItem(position).countryId, getItem(position).countryName)
-                clickListener.onItemClickDelete(countryWillBeDeleted)
+                clickListener.onItemClickDelete(countryWillBeDeleted, position)
             }else{
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
                 val newSavedCountry = SavedCountryModel(getItem(position).countryId, getItem(position).countryName)
-                clickListener.onItemClickSave(newSavedCountry)
+                clickListener.onItemClickSave(newSavedCountry, position)
             }
         }
 

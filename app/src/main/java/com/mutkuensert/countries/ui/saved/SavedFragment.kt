@@ -38,7 +38,12 @@ class SavedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerAdapter()
         setObserver()
+    }
+
+    override fun onStart() {
+        super.onStart()
         viewModel.getAllSavedDataAndRefresh()
+        viewModel.checkExistencesInDatabase()
     }
 
     override fun onDestroyView() {
@@ -54,12 +59,16 @@ class SavedFragment : Fragment() {
 
     private fun setRecyclerAdapter(){
         recyclerAdapter = SavedRecyclerAdapter(object : ItemClickListener {
-            override fun onItemClickSave(savedCountryModel: SavedCountryModel) {
+            override fun onItemClickSave(savedCountryModel: SavedCountryModel, position: Int) {
                 viewModel.saveData(savedCountryModel)
             }
 
-            override fun onItemClickDelete(savedCountryModel: SavedCountryModel) {
+            override fun onItemClickDelete(savedCountryModel: SavedCountryModel, position: Int) {
                 viewModel.deleteSavedData(savedCountryModel)
+            }
+
+            override fun onItemNameClick(position: Int) {
+                //
             }
 
         })
