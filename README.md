@@ -6,12 +6,15 @@ https://user-images.githubusercontent.com/97624869/201350728-e0b0e611-4f91-47e4-
 
 ## Table of Contents
 * [About The Project](#about-the-project)
+* [Reminder](#reminder)
 * [Tech](#tech)
-* [Contact](#contact)
 
 
 ## About The Project
 [GeoDB Cities Api](https://rapidapi.com/wirefreethought/api/geodb-cities/) has been used in the project. List countries, display detailed country informations, save some of them as you wish.
+
+## Reminder
+You should create a constant named as API_KEY to be able to request data.
 
 
 ## Tech
