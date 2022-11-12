@@ -100,7 +100,7 @@ class SharedViewModel @Inject constructor(
             val data = _data.value!!.data!!
             for(i in data){
                 if(i.data.name == savedCountryModel.countryName) {
-                    i.existence = true
+                    i.existenceInDatabase = true
                     break
                 }
             }
@@ -115,7 +115,7 @@ class SharedViewModel @Inject constructor(
             val data = _data.value!!.data!!
             for(i in data){
                 if(i.data.name == savedCountryModel.countryName) {
-                    i.existence = false
+                    i.existenceInDatabase = false
                     break
                 }
             }

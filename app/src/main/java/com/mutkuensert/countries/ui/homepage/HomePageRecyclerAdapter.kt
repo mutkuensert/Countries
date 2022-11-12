@@ -27,12 +27,12 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.countryName.text = getItem(position).data.name
 
-        if(getItem(position).existence){
+        if(getItem(position).existenceInDatabase){
             holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
         }
 
         holder.binding.saveButton.setOnClickListener {
-            if(getItem(position).existence){
+            if(getItem(position).existenceInDatabase){
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_unsaved_star)
 
                 if(getItem(position).data.code != null && getItem(position).data.name != null){
@@ -74,7 +74,7 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
             oldItem: CountriesDataAndExistenceInDatabaseModel,
             newItem: CountriesDataAndExistenceInDatabaseModel
         ): Boolean {
-            return oldItem.existence == newItem.existence
+            return oldItem.existenceInDatabase == newItem.existenceInDatabase
         }
 
     }
