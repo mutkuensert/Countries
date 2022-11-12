@@ -26,7 +26,7 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var countryCode: String
     private val viewModel: DetailViewModel by viewModels()
 
-    private lateinit var country: SavedCountryModel
+    private var country: SavedCountryModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,11 +60,14 @@ class DetailActivity : AppCompatActivity() {
         binding.actionBar.menu.getItem(0).setOnMenuItemClickListener(object: MenuItem.OnMenuItemClickListener{
             override fun onMenuItemClick(item: MenuItem): Boolean {
                 if(item.itemId == binding.actionBar.menu.getItem(0).itemId){
-                    if(viewModel.countryExists.value!!){
-                        viewModel.deleteSavedData(country)
-                    }else{
-                        viewModel.saveData(country)
+                    country?.let {
+                        if(viewModel.countryExists.value == true){
+                            viewModel.deleteSavedData(it)
+                        }else{
+                            viewModel.saveData(it)
+                        }
                     }
+
                 }
                 return true
             }
@@ -88,9 +91,10 @@ class DetailActivity : AppCompatActivity() {
                             capitalTextView.text = response.capital
                             countryCodeTextView.text = response.code
                             actionBar.title = response.name
-                            country = SavedCountryModel(response.code!!, response.name!!)
-
-                            response.name?.let { viewModel.doesCountryExistInUsersDatabase(it) }
+                            if(response.code != null && response.name != null){
+                                country = SavedCountryModel(response.code!!, response.name!!)
+                                viewModel.doesCountryExistInUsersDatabase(response.name!!)
+                            }
 
                             forMoreInformationButton.setOnClickListener {
                                 response.wikiDataId?.let { id->

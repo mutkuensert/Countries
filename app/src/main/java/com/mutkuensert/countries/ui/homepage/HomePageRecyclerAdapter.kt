@@ -3,6 +3,7 @@ package com.mutkuensert.countries.ui.homepage
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -33,12 +34,22 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
         holder.binding.saveButton.setOnClickListener {
             if(getItem(position).existence){
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_unsaved_star)
-                val countryWillBeDeleted = SavedCountryModel(getItem(position).data.code!!, getItem(position).data.name!!)
-                clickListener.onItemClickDelete(countryWillBeDeleted, position)
+
+                if(getItem(position).data.code != null && getItem(position).data.name != null){
+                    val countryWillBeDeleted = SavedCountryModel(getItem(position).data.code!!, getItem(position).data.name!!)
+                    clickListener.onItemClickDelete(countryWillBeDeleted, position)
+                }else{
+                    Toast.makeText(holder.binding.countryCard.context, "Missing data", Toast.LENGTH_LONG).show()
+                }
             }else{
                 holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
-                val newSavedCountry = SavedCountryModel(getItem(position).data.code!!, getItem(position).data.name!!)
-                clickListener.onItemClickSave(newSavedCountry, position)
+
+                if(getItem(position).data.code != null && getItem(position).data.name != null){
+                    val newSavedCountry = SavedCountryModel(getItem(position).data.code!!, getItem(position).data.name!!)
+                    clickListener.onItemClickSave(newSavedCountry, position)
+                }else{
+                    Toast.makeText(holder.binding.countryCard.context, "Missing data", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
