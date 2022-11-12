@@ -49,6 +49,7 @@ class HomePageFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        viewModel.getAllSavedDataAndRefresh()
         viewModel.checkExistencesInDatabase()
     }
 
