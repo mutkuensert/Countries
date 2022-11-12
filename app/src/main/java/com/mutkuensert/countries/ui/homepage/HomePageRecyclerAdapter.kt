@@ -29,6 +29,8 @@ class HomePageRecyclerAdapter(private val clickListener: ItemClickListener): Lis
 
         if(getItem(position).existenceInDatabase){
             holder.binding.saveButton.setBackgroundResource(R.drawable.ic_saved_star)
+        }else{
+            holder.binding.saveButton.setBackgroundResource(R.drawable.ic_unsaved_star)
         }
 
         holder.binding.saveButton.setOnClickListener {
